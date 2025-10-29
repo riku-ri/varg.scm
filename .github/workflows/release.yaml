@@ -11,7 +11,7 @@ on:
         - new feature
         - fix
 env:
-  GH_TOKEN: ${{ github.secret.RELEASE_PAT }}
+  GH_TOKEN: ${{ secrets.RELEASE_PAT }}
 jobs:
   release:
     runs-on: ubuntu-latest #public
