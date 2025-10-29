@@ -31,7 +31,7 @@ jobs:
     environment: release
     runs-on: ubuntu-latest #public
     steps:
-    - run: echo ${{ inputs.type }}
+
     - run: |
         gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
         import json,sys;
@@ -41,7 +41,14 @@ jobs:
         vmax.append(max(map(lambda __:__[1] , vlist)))
         vmax.append(max(map(lambda __:__[2] , vlist)))
         sys.stdout.write(json.dumps(vmax))
-        ' > v.json
+        ' > V.json
+    - run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
+      if: ${{ inputs.type == 'break API' }}
+    - run: printf "$(cat V.json | jq -M '.[0]').$(expr $(cat V.json | jq -M '.[1]') + 1).$(cat V.json | jq -M '.[2]')" | tee v
+      if: ${{ inputs.type == 'new feature' }}
+    - run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
+      if: ${{ inputs.type == 'fix' }}
+
     - run: printf 'gh' | tee gh
     - run: printf ' --prerelease' | tee --append gh
       if: ${{ inputs.prelease }}
@@ -52,7 +59,6 @@ jobs:
     - run: |
         $(cat gh) -R ${{ github.event.repository.full_name }} \
           release new \
-            -t "${{ inputs.title }}" \
+            -t "$(cat v) ${{ inputs.title }}" \
             -n "${{ inputs.notes }}" \
-            "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
-      if: ${{ inputs.type == 'break API' }}
+            "$(cat v)"
