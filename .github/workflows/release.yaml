@@ -14,6 +14,8 @@ on:
         type: boolean
       draft:
         type: boolean
+      fail-on-no-commits:
+        type: boolean
       title:
         description: 'title'
         required: true
@@ -40,13 +42,16 @@ jobs:
         vmax.append(max(map(lambda __:__[2] , vlist)))
         sys.stdout.write(json.dumps(vmax))
         ' > v.json
+    - run: printf 'gh' | tee gh
+    - run: printf ' --prerelease' | tee --append gh
+      if: ${{ inputs.prelease }}
+    - run: printf ' --draft' | tee --append gh
+      if: ${{ inputs.draft }}
+    - run: printf ' --fail-on-no-commits' | tee --append gh
+      if: ${{ inputs.fail-on-no-commits }}
     - run: |
-        gh -R ${{ github.event.repository.full_name }} \
+        $(cat gh) -R ${{ github.event.repository.full_name }} \
           release new \
-            ${{ inputs.prelease && '-p' }} \
-            ${{ inputs.draft && '-d' }} \
-            -t "${{ inputs.title }}" \
             -n "${{ inputs.notes }}" \
-            --fail-on-no-commits \
             "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
       if: ${{ inputs.type == 'break API' }}
