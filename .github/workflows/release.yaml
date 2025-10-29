@@ -23,5 +23,7 @@ jobs:
         vlist = map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read()))
         vmax = []
         vmax.append(max(map(lambda __:__[0] , vlist)))
-        print(vmax)
+        vmax.append(max(map(lambda __:__[1] , vlist)))
+        vmax.append(max(map(lambda __:__[2] , vlist)))
+        sys.stdout.write(json.dumps(vmax))
         '
