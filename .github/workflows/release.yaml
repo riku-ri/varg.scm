@@ -26,4 +26,6 @@ jobs:
         vmax.append(max(map(lambda __:__[1] , vlist)))
         vmax.append(max(map(lambda __:__[2] , vlist)))
         sys.stdout.write(json.dumps(vmax))
-        '
+        ' > v.json
+    - run: gh -R ${{ github.event.repository.full_name }} release new "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
+      if: ${{ inputs.type == 'break API' }}
