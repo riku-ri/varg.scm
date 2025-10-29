@@ -43,6 +43,10 @@ jobs:
     - run: |
         gh -R ${{ github.event.repository.full_name }} \
           release new \
+            ${{ inputs.prelease && '-p' }} \
+            ${{ inputs.draft && '-d' }} \
+            -t "${{ inputs.title }}" \
+            -n "${{ inputs.notes }}" \
             --fail-on-no-commits \
             "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
       if: ${{ inputs.type == 'break API' }}
