@@ -1,0 +1,13 @@
+on: workflow_dispatch
+jobs:
+  github-yaml:
+    runs-on: ubuntu-latest #public
+    steps:
+    - run: |
+        cat <<// | python -c 'import sys,json,yaml;sys.stdout.write(yaml.safe_dump(json.loads(sys.stdin.read())))' | tee github.yaml
+        ${{ toJson(github) }}
+        //
+    - uses: actions/upload-artifact@main
+      with:
+        name: github.yaml
+        path: github.yaml
