@@ -5,11 +5,12 @@ on:
 permissions:
   contents: read
   pull-requests: read
-env:
-  GITHUB_CONTEX: ${{ toJson(github) }}
 jobs:
   release-info:
     runs-on: ubuntu-latest #public
     steps:
-    - run: true
-    # cat 
+    - run: |
+        cat <<// > github.json
+        ${{ toJson(github) }}
+        //
+    - run: cat github.json
