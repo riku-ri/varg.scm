@@ -19,14 +19,11 @@ jobs:
     - run: echo ${{ inputs.type }}
     - run: |
         gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
-        import json,sys;print(
-          max(
-            map(
-              lambda __:__[0] ,
-              map(lambda __:list(map(int , __["name"].split(".")),
-            ) ,
-            json.loads(sys.stdin.read()))) ,
-          )
-          +
-          1
-        )'
+        import json,sys;
+        vlist = map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read()))
+        vmax = []
+        vmax.append(max(map(lambda __:__[0] , vlist)))
+        vmax.append(max(map(lambda __:__[1] , vlist)))
+        vmax.append(max(map(lambda __:__[2] , vlist)))
+        sys.stdout.write(json.dumps(vmax))
+        '
