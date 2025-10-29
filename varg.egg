@@ -1,0 +1,25 @@
+;; vim: syntax=scheme
+
+(
+
+(version "1.0.0")
+(synopsis "A template for defining dynamic arguments procedure")
+(author "riku-ri")
+(maintainer "riku-ri")
+(category lang-exts)
+(license "MIT")
+;(dependencies)
+;(test-dependencies test)
+;(build-dependencies)
+;(foreign-dependencies git)
+(platform (or linux unix))
+;((distribution-files)
+
+(components
+	(extension varg
+		(source src/varg.scm)
+		(linkage dynamic)
+	)
+)
+
+)
