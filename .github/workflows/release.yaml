@@ -10,14 +10,23 @@ on:
         - break API
         - new feature
         - fix
-      description:
-        description: 'release description'
+      prerelease:
+        type: boolean
+      draft:
+        type: boolean
+      title:
+        description: 'title'
         required: true
+        type: string
+      notes:
+        description: 'release notes'
+        required: false
         type: string
 env:
   GH_TOKEN: ${{ secrets.RELEASE_PAT }}
 jobs:
   release:
+    environment: release
     runs-on: ubuntu-latest #public
     steps:
     - run: echo ${{ inputs.type }}
@@ -31,5 +40,9 @@ jobs:
         vmax.append(max(map(lambda __:__[2] , vlist)))
         sys.stdout.write(json.dumps(vmax))
         ' > v.json
-    - run: gh -R ${{ github.event.repository.full_name }} release new "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
+    - run: |
+        gh -R ${{ github.event.repository.full_name }} \
+          release new \
+            --fail-on-no-commits \
+            "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
       if: ${{ inputs.type == 'break API' }}
