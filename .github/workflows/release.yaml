@@ -52,6 +52,7 @@ jobs:
     - run: |
         $(cat gh) -R ${{ github.event.repository.full_name }} \
           release new \
+            -t "${{ inputs.title }}" \
             -n "${{ inputs.notes }}" \
             "$(expr $(cat v.json | jq -M '.[0]') + 1).0.0"
       if: ${{ inputs.type == 'break API' }}
