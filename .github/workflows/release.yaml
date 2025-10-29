@@ -10,6 +10,10 @@ on:
         - break API
         - new feature
         - fix
+      description:
+        description: 'release description'
+        required: true
+        type: string
 env:
   GH_TOKEN: ${{ secrets.RELEASE_PAT }}
 jobs:
