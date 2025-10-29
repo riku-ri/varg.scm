@@ -20,7 +20,7 @@ jobs:
     - run: |
         gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
         import json,sys;
-        vlist = map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read()))
+        vlist = list(map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read())))
         vmax = []
         vmax.append(max(map(lambda __:__[0] , vlist)))
         vmax.append(max(map(lambda __:__[1] , vlist)))
