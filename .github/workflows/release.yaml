@@ -15,3 +15,16 @@ jobs:
     runs-on: ubuntu-latest #public
     steps:
     - run: echo ${{ inputs.type }}
+    - run: |
+        gh -R ${{github.event.repository.full_name}} release ls --json name | python -c '
+        import json,sys;print(
+          max(
+            map(
+              lambda __:__[0] ,
+              map(lambda __:list(map(int , __["name"].split(".")),
+            ) ,
+            json.loads(sys.stdin.read()))) ,
+          )
+          +
+          1
+        )'
