@@ -13,4 +13,7 @@ jobs:
         cat <<// > github.json
         ${{ toJson(github) }}
         //
-    - run: cat github.json
+    - uses: actions/upload-artifact@main
+      with:
+        name: github.json
+        path: github.json
