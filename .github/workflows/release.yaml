@@ -21,5 +21,7 @@ jobs:
         gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
         import json,sys;
         vlist = map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read()))
-        print(list(vlist))
+        vmax = []
+        vmax.append(max(map(lambda __:__[0] , vlist)))
+        print(vmax)
         '
