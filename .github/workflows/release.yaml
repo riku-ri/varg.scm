@@ -1,0 +1,17 @@
+on:
+  workflow_dispatch:
+    inputs:
+      rtype:
+        description: 'releas diff'
+        required: true
+        default: 'fix'
+        type: choice
+        options:
+        - break API
+        - new feature
+        - fix
+jobs:
+  release:
+    runs-on: ubuntu-latest #public
+    steps:
+    - run: echo ${{ inputs.rtype }}
