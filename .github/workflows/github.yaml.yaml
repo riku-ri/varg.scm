@@ -4,7 +4,7 @@ jobs:
     runs-on: ubuntu-latest #public
     steps:
     - run: |
-        cat <<// | python -c 'import sys,json,yaml;sys.stdout.write(yaml.safe_dump(json.loads(sys.stdin.read())))' | tee github.yaml
+        cat <<// | python -c 'import sys,json,yaml;sys.stdout.write(yaml.safe_dump(json.loads(sys.stdin.read())))' > github.yaml
         ${{ toJson(github) }}
         //
     - uses: actions/upload-artifact@main

@@ -1,0 +1,16 @@
+github.json
+github.yaml
+
+*.ss~
+*.ss#*
+.#*.ss
+
+*.scm~
+*.scm#*
+.#*.scm
+
+**/*=
+
+*.out
+
+/.local
