@@ -9,4 +9,4 @@ jobs:
   release-info:
     runs-on: ubuntu-latest #public
     steps:
-    = run: true
+    - run: true

@@ -1,4 +1,4 @@
-on: workflw_dispatch
+on: workflow_dispatch
 jobs:
   github-json:
     runs-on: ubuntu-latest #public
