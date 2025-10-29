@@ -10,13 +10,15 @@ on:
         - break API
         - new feature
         - fix
+env:
+  GH_TOKEN: ${{ github.token }}
 jobs:
   release:
     runs-on: ubuntu-latest #public
     steps:
     - run: echo ${{ inputs.type }}
     - run: |
-        gh -R ${{github.event.repository.full_name}} release ls --json name | python -c '
+        gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
         import json,sys;print(
           max(
             map(
