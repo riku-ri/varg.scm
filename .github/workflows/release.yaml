@@ -33,7 +33,7 @@ jobs:
     steps:
 
     - run: |
-        gh -R ${{ github.event.repository.full_name }} release ls --json name | python -c '
+        gh -R ${{ github.event.repository.full_name }} release ls --json tagName | python -c '
         import json,sys;
         vlist = list(map(lambda __:list(map(int , __["name"].split("."))) , json.loads(sys.stdin.read())))
         vmax = []

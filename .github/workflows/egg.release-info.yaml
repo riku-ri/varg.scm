@@ -17,4 +17,11 @@ jobs:
   release-info:
     runs-on: ubuntu-latest #public
     steps:
+    - run: echo '(repo git "${{ github.repository.git_url }}")' | tee --append ${{ github.repository.name }}.release-info
+    - run: echo '(uri targz "${{ github.repository.git_url }}/tarball/{egg-release}")' | tee --append ${{ github.repository.name }}.release-info
+    - run: gh release ls --json tagName | jq '.[].tagName' | xargs -I__ -d"\n" echo '(release __)' | tee --append ${{ github.repository.name }}.release-info
+    - uses: actions/upload-artifact@main
+      with:
+        name: ${{ github.repository.name }}.release-info
+        path: ${{ github.repository.name }}.release-info
     - run: true
