@@ -145,6 +145,11 @@
 				((not (list? (car args)))
 					(error "arguments to parse is not a list" (car args)))
 			)
+			(map
+				(lambda (?)
+					(let ((to-check (assoc* '() ? (assoc* '() #:with-value meta-arg))))
+						(cond ((not (list? to-check)) (error (sprintf "value of ~S is not a list" ?) to-check)))))
+				'(#:with-value #:without-value #:literal #:explicit))
 			(let
 				(
 					(args (car args))
@@ -154,6 +159,7 @@
 					(explicit (assoc* '() #:explicit (assoc* '() #:with-value meta-arg)))
 					(enable-unknown (member #:enable-unknown (assoc* '() #:without-value meta-arg)))
 				)
+				(map (lambda (?) (cond ((not (keyword? ?)) (error "non keyword value in #:without-value" ?)))) without-value)
 				(:varg
 					args
 					with-value
@@ -166,14 +172,3 @@
 		)
 	)
 )
-
-;; test code
-;(varg
-;	'(#:with-value #:a #:b)
-;	'(#:without-value #:c #:d)
-;	#:enable-unknown
-;	'(#:literal test)
-;	'(#:explicit #:b)
-;	;`(#:before-abort . ,(lambda () (error "error")))
-;	'((#:b . 1) #:c "here" "there")
-;)
