@@ -56,6 +56,7 @@ jobs:
       if: ${{ inputs.draft }}
     - run: printf ' --fail-on-no-commits' | tee --append gh
       if: ${{ inputs.fail-on-no-commits }}
+    - run: cat gh
     - run: |
         $(cat gh) -R ${{ github.event.repository.full_name }} \
           release new \
