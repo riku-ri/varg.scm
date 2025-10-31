@@ -2,9 +2,10 @@ on:
   workflow_dispatch:
   workflow_call:
   pull_request:
-  - opened
-  - edited
-  - auto_merge_enabled
+    types:
+    - opened
+    - edited
+    - auto_merge_enabled
 jobs:
   test:
     runs-on: ubuntu-latest #public
