@@ -26,8 +26,6 @@ section structure will be like:
   - <code><i><b>args</b></i></code>  
     <code><i><b>args</b></i></code> should be a sequence of them:
     - <code>(cons #:with-value <i><b>list-of-keyword</b></i>)</code>
-      <details>
-
       > Arguments that are with value.
       > They may present in the necessary parameter
       > <code><i><b>a-procedure-without-argument</b></i></code>
@@ -41,22 +39,14 @@ section structure will be like:
           > `varg` will report an error that `#:a` is missing because
           > `#:a` is in `#:explict` but
           > not in `'()`(the last parameter of `varg` here)
-
-      </details>
     - <code>(cons #:without-value <i><b>list-of-keyword</b></i>)</code>
-      <details>
-
       > Arguments that are without value.
       > They may present in the necessary parameter
       > <code><i><b>a-procedure-without-argument</b></i></code>
       > They are like options in command line, set or not.
       - *e.g.*
         - `(varg '(#:without-value #:c #:d) '(#:c))`
-
-      </details>
     - <code>(cons #:literal <i><b>any-list</b></i>)</code>
-      <details>
-
       > Literal parameters.
       > They **must** present in the necessary parameter
       > <code><i><b>a-procedure-without-argument</b></i></code>.
@@ -72,11 +62,7 @@ section structure will be like:
           > `'((#:with-value) (#:without-value) (#:lteral "1" "2"))`
         - `(varg '(#:literal 1st 2nd) '("1"))`
           > `varg` will report `2nd` is missing here
-
-      </details>
     - <code>(cons #:explict <i><b>list-of-keyword</b></i>)</code>
-      <details>
-
       > If a argument listed in `#:with-value` is necessary,
       > put the keyword in `#:explict` too.
       >
@@ -90,11 +76,7 @@ section structure will be like:
       - *e.g.*
         - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '((#:b . 1)))`
           > `varg` will report the missing `#:a` error
-
-      </details>
     - <code>(cons #:before-abort <i><b>a-procedure-without-argument</b></i>)</code>
-      <details>
-
       > `varg` will abort the program if it found "error",
       > for example a keyword is listed in `#:example` but missing.
       > Sometimes we may want to do somthing before aborting,
@@ -105,11 +87,7 @@ section structure will be like:
       > before it end the program.
       > > Note that if aborting is from chicken scheme system but not `varg`,
       > > this is not valid.
-
-      </details>
     - `#:enable-unknown`
-      <details open>
-
       > If `#:enable-unknown` is set,
       > `varg` will append unknown arguments to
       > `#:literal` in result but not report error.
@@ -119,8 +97,6 @@ section structure will be like:
           > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
           > If `#:enable-unknown` is not set,
           > `varg` will report error that `2 #:a-keyword` is unknown.
-
-      </details>
     - [necessary]<code>(list <i><b>arguments-to-parse</b></i>)</code>
 
     Each part listed above can be omitted except item marked by "[necessary]".
