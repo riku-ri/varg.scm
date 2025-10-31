@@ -49,7 +49,7 @@ jobs:
     - run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
       if: ${{ inputs.type == 'fix' }}
 
-    - run: printf 'gh' | tee gh
+    - run: printf 'gh -R ${{ github.event.repository.full_name }}' | tee gh
     - run: printf ' --prerelease' | tee --append gh
       if: ${{ inputs.prelease }}
     - run: printf ' --draft' | tee --append gh
@@ -58,7 +58,7 @@ jobs:
       if: ${{ inputs.fail-on-no-commits }}
     - run: cat gh
     - run: |
-        $(cat gh) -R ${{ github.event.repository.full_name }} \
+        $(cat gh) \
           release new \
             -t "$(cat v) ${{ inputs.title }}" \
             -n "${{ inputs.notes }}" \
