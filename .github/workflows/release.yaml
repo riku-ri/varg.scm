@@ -51,7 +51,7 @@ jobs:
 
     - run: printf 'gh -R ${{ github.event.repository.full_name }} release new' | tee gh
     - run: printf ' --prerelease' | tee --append gh
-      if: ${{ inputs.prelease }}
+      if: ${{ inputs.prerelease }}
     - run: printf ' --draft' | tee --append gh
       if: ${{ inputs.draft }}
     - run: printf ' --fail-on-no-commits' | tee --append gh
