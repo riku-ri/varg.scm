@@ -1,0 +1,13 @@
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  github-yaml:
+    runs-on: ubuntu-latest #public
+    steps:
+    - run: sudo apt install chicken-bin
+    - run: chicken-install -s test
+    - use: actions/checkout@main
+      with:
+        submodules: recursive
+    - run: chicken-install -n -l .
