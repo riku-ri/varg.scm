@@ -23,4 +23,4 @@ chicken-install -s -l .
 
 ## Development
 
-Refer to [docs/*dev.md*](docs/dev.md)
+Refer to [docs/dev.md](docs/dev.md)
