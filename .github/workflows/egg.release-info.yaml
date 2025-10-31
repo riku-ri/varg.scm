@@ -1,6 +1,10 @@
 on:
   release:
-  - released
+    types:
+    - published
+    - edited
+    - prereleased
+    - released
 jobs:
   release-info:
     environment: release-info
