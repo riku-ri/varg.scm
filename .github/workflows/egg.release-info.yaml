@@ -1,15 +1,6 @@
 on:
   release:
   workflow_dispatch:
-  schedule:
-          #┌───────────── minute (0 - 59)
-          #│ ┌───────────── hour (0 - 23)
-          #│ │ ┌───────────── day of the month (1 - 31)
-          #│ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
-          #│ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
-          #│ │ │ │ │
-          #* * * * *
-  - cron: '0 0 1 * 0'
 permissions:
   contents: read
   pull-requests: read
@@ -19,11 +10,21 @@ jobs:
   release-info:
     runs-on: ubuntu-latest #public
     steps:
-    - run: echo '(repo git "${{ github.event.repository.git_url }}")' | tee --append ${{ github.event.repository.name }}.release-info
-    - run: echo '(uri targz "${{ github.event.repository.html_url }}/tarball/{egg-release}")' | tee --append ${{ github.event.repository.name }}.release-info
-    - run: gh -R ${{ github.event.repository.full_name }} release ls --json tagName | jq '.[].tagName' | xargs -I__ -d"\n" echo '(release __)' | tee --append ${{ github.event.repository.name }}.release-info
+    #- run: echo '(repo git "${{ github.event.repository.git_url }}")' | tee --append ${{ github.event.repository.name }}.release-info
+    #- run: echo '(uri targz "${{ github.event.repository.html_url }}/tarball/{egg-release}")' | tee --append ${{ github.event.repository.name }}.release-info
+    #- run: gh -R ${{ github.event.repository.full_name }} release ls --json tagName | jq '.[].tagName' | xargs -I__ -d"\n" echo '(release __)' | tee --append ${{ github.event.repository.name }}.release-info
+    #- uses: actions/upload-artifact@main
+    #  with:
+    #    name: ${{ github.event.repository.name }}.release-info
+    #    path: ${{ github.event.repository.name }}.release-info
+    #- run: true
+
+
+    - run: |
+        cat <<// | python -c 'import sys,json,yaml;sys.stdout.write(yaml.safe_dump(json.loads(sys.stdin.read())))' > github.yaml
+        ${{ toJson(github) }}
+        //
     - uses: actions/upload-artifact@main
       with:
-        name: ${{ github.event.repository.name }}.release-info
-        path: ${{ github.event.repository.name }}.release-info
-    - run: true
+        name: github.yaml
+        path: github.yaml
