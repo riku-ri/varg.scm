@@ -1,8 +1,9 @@
 on:
   release:
-env:
-  GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+  - released
 jobs:
+  env:
+    GH_TOKEN: ${{ secrets.PAT }}
   release-info:
     environment: release-info
     runs-on: ubuntu-latest #public

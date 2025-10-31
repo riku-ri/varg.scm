@@ -24,11 +24,11 @@ on:
         description: 'release notes'
         required: false
         type: string
-env:
-  GH_TOKEN: ${{ secrets.RELEASE_PAT }}
 jobs:
   release:
     environment: release
+    env:
+      GH_TOKEN: ${{ secrets.RELEASE_PAT }}
     runs-on: ubuntu-latest #public
     steps:
 
