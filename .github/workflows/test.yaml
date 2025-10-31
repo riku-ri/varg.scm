@@ -5,7 +5,7 @@ jobs:
   test:
     runs-on: ubuntu-latest #public
     steps:
-    - run: sudo apt install chicken-bin
+    - run: sudo apt install -y chicken-bin
     - run: chicken-install -s test
     - uses: actions/checkout@main
       with:
