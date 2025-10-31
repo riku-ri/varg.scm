@@ -2,10 +2,10 @@ on:
   release:
   - released
 jobs:
-  env:
-    GH_TOKEN: ${{ secrets.PAT }}
   release-info:
     environment: release-info
+    env:
+      GH_TOKEN: ${{ secrets.PAT }}
     runs-on: ubuntu-latest #public
     steps:
     - run: echo '(repo git "${{ github.event.repository.git_url }}")' | tee --append ${{ github.event.repository.name }}.release-info
