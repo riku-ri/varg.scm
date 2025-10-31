@@ -6,8 +6,9 @@ jobs:
     runs-on: ubuntu-latest #public
     steps:
     - run: sudo apt install -y chicken-bin
+    - run: chicken --version
     - run: chicken-install -s test
     - uses: actions/checkout@main
       with:
         submodules: recursive
-    - run: chicken-install -n -l .
+    - run: chicken-install -n -test -l .
