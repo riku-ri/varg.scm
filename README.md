@@ -4,7 +4,7 @@ A template for defining dynamic arguments procedure.
 
 ## Usage
 
-Refer to [docs/*usage.md*](docs/usage.md)
+Refer to [docs/usage.md](docs/usage.md)
 
 ## Installation
 
