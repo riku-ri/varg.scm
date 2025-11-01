@@ -19,7 +19,7 @@
 
 (components
 	(extension varg
-		(source src/varg.scm)
+		(source src/varg.ss)
 		(linkage dynamic)
 	)
 )
