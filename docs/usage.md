@@ -14,7 +14,7 @@ section structure will be like:
 
 ## Repository
 
-[https://github.com/riku-ri/varg.scm/](https://github.com/riku-ri/varg.scm/)
+[https://github.com/riku-ri/varg.ss/](https://github.com/riku-ri/varg.ss/)
 
 ## Requirements
 
