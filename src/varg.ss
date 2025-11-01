@@ -4,6 +4,6 @@
 	)
 
 (import (chicken base))
-(include-relative "include/varg.scm")
+(include-relative "include/varg.ss")
 
 )

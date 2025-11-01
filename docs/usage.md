@@ -1,4 +1,4 @@
-# varg.scm
+# varg.ss
 
 ```lisp
 (import varg)

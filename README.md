@@ -1,4 +1,4 @@
-# varg.scm
+# varg.ss
 
 A template for defining dynamic arguments procedure.
 
