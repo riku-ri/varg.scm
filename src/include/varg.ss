@@ -11,13 +11,13 @@
 		(cond ((not (list? <>)) (error errtag (sprintf "argument is not a list ~S" <>)))))
 	(define before-abort
 		(foldl
-			(lambda (done todo)
+			(lambda (l r)
 				(cond
-					((pair? todo)
+					((pair? r)
 						(cond
-							((eq? (car todo) #:before-abort) (cdr todo))
-							(else done)))
-						(else done)))
+							((eq? (car r) #:before-abort) (cdr r))
+							(else l)))
+						(else l)))
 			void
 			|>with-value,without-value,literal,explicit,enable-unknown,before-abort<|))
 	(cond ((not (procedure? before-abort)) (error "#:before-abort is not a procedure" before-abort)))
@@ -54,10 +54,10 @@
 							(
 								(missing
 									(foldl
-										(lambda (done todo)
+										(lambda (l r)
 											(cond
-												((member todo (map car ::>with-value<)) done)
-												(else (cons todo done)
+												((member r (map car ::>with-value<)) l)
+												(else (cons r l)
 											)))
 										'()
 										<explicit>))
