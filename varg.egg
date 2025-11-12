@@ -2,7 +2,6 @@
 
 (
 
-(version "1.0.0")
 (synopsis "A template for defining dynamic arguments procedure")
 (author "riku-ri")
 (maintainer "riku-ri")
@@ -18,22 +17,32 @@
 (test-dependencies test)
 
 (components
-	(c-object varg.varg
-		(source src/include/varg.ss)
-		(csc-options "-J" "-unit" "varg.varg")
-	)
 	(extension varg
-		;(csc-options "-uses" "varg.varg")
-		; Note that -uses is from the module manual page of chicken website
-		; According to
-		;   https://lists.gnu.org/archive/html/chicken-users/2005-09/msg00116.html
-		;   -uses is for static linking
-		; When compile a extension by chicken-install
-		;   -uses should not appear cause it should generate a dynamic library
+		(component-dependencies varg.varg)
 		(source src/varg.ss)
-		(objects varg.varg)
-		(linkage dynamic)
 	)
+	(extension varg.varg
+		(source src/include/varg.ss)
+	)
+
+	;(extension varg
+	;	(csc-options "-uses" "varg.varg")
+	;	; Note that -uses is from the module manual page of chicken website
+	;	; According to
+	;	;   https://lists.gnu.org/archive/html/chicken-users/2005-09/msg00116.html
+	;	;   -uses is for static linking
+	;	; When compile a extension by chicken-install
+	;	;   -uses should not appear
+	;	;   cause it should generate a dynamic library(for csi)
+	;	(objects varg.varg)
+	;	(source src/varg.ss)
+	;	;(linkage dynamic)
+	;	;(linkage static)
+	;)
+	;(c-object varg.varg
+	;	(source src/include/varg.ss)
+	;	(csc-options "-J" "-unit" "varg.varg")
+	;)
 )
 
 )
