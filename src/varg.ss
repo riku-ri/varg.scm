@@ -1,9 +1,11 @@
-(module (varg)
+(module varg
 	(
 		varg
 	)
 
-(import (chicken base))
-(include-relative "include/varg.ss")
+(import (varg varg))
+
+;(import (chicken base))
+;(include-relative "include/varg.ss")
 
 )

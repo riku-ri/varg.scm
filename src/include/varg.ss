@@ -1,3 +1,5 @@
+(module (varg varg) (varg)
+
 (import scheme)
 (import (chicken base))
 (import (chicken format))
@@ -171,4 +173,6 @@
 			)
 		)
 	)
+)
+
 )
