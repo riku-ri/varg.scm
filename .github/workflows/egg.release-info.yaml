@@ -18,3 +18,11 @@ jobs:
       with:
         name: ${{ github.event.repository.name }}.release-info
         path: ${{ github.event.repository.name }}.release-info
+    - run: |
+        cat <<// | python -c 'import sys,json,yaml;sys.stdout.write(yaml.safe_dump(json.loads(sys.stdin.read())))' > github.yaml
+        ${{ toJson(github) }}
+        //
+    - uses: actions/upload-artifact@main
+      with:
+        name: github.yaml
+        path: github.yaml
