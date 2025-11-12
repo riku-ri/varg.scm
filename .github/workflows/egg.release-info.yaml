@@ -12,7 +12,8 @@ jobs:
     steps:
     - run: echo '(repo git "${{ github.event.repository.git_url }}")' | tee --append ${{ github.event.repository.name }}.release-info
     - run: echo '(uri targz "${{ github.event.repository.html_url }}/tarball/{egg-release}")' | tee --append ${{ github.event.repository.name }}.release-info
-    - run: gh -R ${{ github.event.repository.full_name }} release ls --json tagName | jq '.[].tagName' | xargs -I__ -d"\n" echo '(release __)' | tee --append ${{ github.event.repository.name }}.release-info
+    #- run: gh -R ${{ github.event.repository.full_name }} release ls --json tagName | jq '.[].tagName' | xargs -I__ -d"\n" echo '(release __)' | tee --append ${{ github.event.repository.name }}.release-info
+    - run: echo ${{ github.event.release.tag_name }} | xargs -I__ -d"\n" echo '(release "__")' | tee --append ${{ github.event.repository.name }}.release-info
     - run: gh -R ${{ github.event.repository.full_name }} release upload ${{ github.event.release.tag_name }} ${{ github.event.repository.name }}.release-info
     - uses: actions/upload-artifact@main
       with:
