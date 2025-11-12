@@ -4,12 +4,13 @@ on:
       type:
         description: 'releas diff'
         required: true
-        default: 'fix'
+        default: 'misc'
         type: choice
         options:
-        - break API
-        - new feature
+        - NEW
+        - feature
         - fix
+        - misc
       prerelease:
         type: boolean
       draft:
@@ -51,7 +52,7 @@ jobs:
     - run: printf "$(cat V.json | jq -M '.[0]').$(expr $(cat V.json | jq -M '.[1]') + 1).$(cat V.json | jq -M '.[2]')" | tee v
       if: ${{ inputs.type == 'new feature' }}
     - run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
-      if: ${{ inputs.type == 'fix' }}
+      if: ${{ inputs.type == 'fix' || inputs.type == 'misc' }}
 
     - run: printf 'gh -R ${{ github.event.repository.full_name }} release new' | tee gh
     - run: printf ' --prerelease' | tee --append gh
