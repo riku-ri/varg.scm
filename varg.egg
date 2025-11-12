@@ -22,7 +22,7 @@
 		(source src/varg.ss)
 	)
 	(extension varg.varg
-		(source src/include/varg.ss)
+		(source src/varg/varg.ss)
 	)
 
 	;(extension varg
