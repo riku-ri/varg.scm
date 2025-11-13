@@ -20,23 +20,22 @@ section structure will be like:
 
 ## API
 
-### <code>(varg <i><b>args</b></i>)</code>
+### `(varg |args|)`
 
 #### Return
 
-<code>(varg <i><b>args</b></i>)</code> will
-return a list that contain:
-- <code>(cons #:with-value <i><b>list-of-key-value-pair</b></i>)</code>
-  - <code><i><b>list-of-key-value-pair</b></i></code> is a "association list"
+`(varg |args|)` will return a list that contain:
+- `(cons #:with-value |list-of-key-value-pair|)`
+  - `|list-of-key-value-pair|` is a "association list"
     - *e.g.* `(cons #:with-value '(("key" . "value"))`
-- <code>(cons #:without-value <i><b>list-of-keyword</b></i>)</code>
+- `(cons #:without-value |list-of-keyword|)`
   - *e.g.* `(cons #:without-value '(#:a #:b))`
-- <code>(cons #:literal <i><b>any-list</b></i>)</code>
-  - <code><i><b>any-list</b></i></code> is a list
+- `(cons #:literal |any-list|)`
+  - `|any-list|` is a list
 
 #### Exception
 
-Exception of <code>(varg <i><b>args</b></i>)</code>
+Exception of `(varg |args|)`
 is supposed to be compliant with the module (chicken condition)
 and SRFI-12
 - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
@@ -48,17 +47,17 @@ Exception details is listed in the section #Arguments# below.
 
 #### Arguments
 
-- <code><i><b>args</b></i></code> in <code>(varg <i><b>args</b></i>)</code>  
-  <code><i><b>args</b></i></code> should be a sequence of them:
-  - <code>(cons #:with-value <i><b>list-of-keyword</b></i>)</code>
+- `|args|` in `(varg |args|)`  
+  `|args|` should be a sequence of them:
+  - `(cons #:with-value |list-of-keyword|)`
     > Arguments that are with value.
     > They may present in the necessary parameter
-    > <code><i><b>a-procedure-without-argument</b></i></code>
+    > `|a-procedure-without-argument|`
     > as a pair.
     > If a with-value parameter is necessary for your self-defined function,
     > set the keyword in `#:explict`
     - abort:
-      - if <code><i><b>list-of-keyword</b></i></code> is not a list
+      - if `|list-of-keyword| `is not a list
       - may abort by `#:explict`(see below)
     - *e.g.*
       - `(varg '(#:with-value #:a #:b) '())`
@@ -67,40 +66,40 @@ Exception details is listed in the section #Arguments# below.
         > `varg` will abort a condition regarding `#:a` is missing because
         > `#:a` is in `#:explict` but
         > not in `'()`(the last parameter of `varg` here)
-  - <code>(cons #:without-value <i><b>list-of-keyword</b></i>)</code>
+  - `(cons #:without-value |list-of-keyword|)`
     > Arguments that are without value.
     > They may present in the necessary parameter
-    > <code><i><b>a-procedure-without-argument</b></i></code>
+    > `|a-procedure-without-argument|`
     > They are like options in command line, set or not.
     - abort:
-      - if any element of <code><i><b>list-of-keyword</b></i></code>
+      - if any element of `|list-of-keyword|`
         is not a keyword
-      - if <code><i><b>list-of-keyword</b></i></code> is not a list
+      - if `|list-of-keyword| `is not a list
     - *e.g.*
       - `(varg '(#:without-value #:c #:d) '(#:c))`
-  - <code>(cons #:literal <i><b>any-list</b></i>)</code>
+  - `(cons #:literal |any-list|)`
     > Literal parameters.
     > They **must** present in the necessary parameter
-    > <code><i><b>a-procedure-without-argument</b></i></code>.
-    > > Details of <code><i><b>any-list</b></i></code>
+    > `|a-procedure-without-argument|.`
+    > > Details of `|any-list|`
     > > make no sense for `varg`,
     > > `varg` only need to know number of them.
     > > So `varg` does not check types of elements in
-    > > <code><i><b>any-list</b></i></code>,
+    > > `|any-list|,`
     > > but it is recommended make all elements to be scheme quoted symbol
     - abort:
-      - if <code><i><b>list-of-keyword</b></i></code> is not a list
+      - if `|list-of-keyword| `is not a list
       - if the necessary parameter
-        <code><i><b>a-procedure-without-argument</b></i></code>(see below)
+        `|a-procedure-without-argument|(`see below)
         did not contain enough element that match to
-        <code><i><b>any-list</b></i></code>
+        `|any-list|`
     - *e.g.*
       - `(varg '(#:literal 1st 2nd) '("1" "2"))`
         > This will return
         > `'((#:with-value) (#:without-value) (#:lteral "1" "2"))`
       - `(varg '(#:literal 1st 2nd) '("1"))`
         > `varg` will abort a condition regarding `2nd` is missing here
-  - <code>(cons #:explict <i><b>list-of-keyword</b></i>)</code>
+  - `(cons #:explict |list-of-keyword|)`
     > If a argument listed in `#:with-value` is necessary,
     > put the keyword in `#:explict` too.
     >
@@ -109,10 +108,10 @@ Exception details is listed in the section #Arguments# below.
     > and `#:literal` is always necessary
     > (unless `#:enable-unknown`) is set.
     - abort:
-      - if <code><i><b>list-of-keyword</b></i></code> is not a list
-      - for each element ***k*** of <code><i><b>list-of-keyword</b></i></code>,
+      - if `|list-of-keyword| `is not a list
+      - for each element ***k*** of `|list-of-keyword|,`
         if the necessary parameter
-        <code><i><b>a-procedure-without-argument</b></i></code>(see below)
+        `|a-procedure-without-argument|(`see below)
         did not contain a pair that `car` is ***k***
         > If a keyword presented in `#:explict` but not in `#:with-value`,
         > `varg` will **abort forever**.
@@ -129,7 +128,7 @@ Exception details is listed in the section #Arguments# below.
         > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
         > If `#:enable-unknown` is not set,
         > `varg` will abort a condition regarding `2 #:a-keyword` is unknown.
-  - [necessary]<code>(list <i><b>arguments-to-parse</b></i>)</code>
+  - [necessary]`(list |arguments-to-parse|)`
     - abort:
       - if this is missing
       - if this is not a list
