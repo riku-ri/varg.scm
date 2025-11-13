@@ -85,10 +85,10 @@ Exception details is listed in the section #Arguments# below.
     > > make no sense for `varg`,
     > > `varg` only need to know number of them.
     > > So `varg` does not check types of elements in
-    > > `|any-list|,`
+    > > `|any-list|`,
     > > but it is recommended make all elements to be scheme quoted symbol
     - abort:
-      - if `|any-list| `is not a list
+      - if `|any-list|` is not a list
       - if the necessary parameter
         `|arguments-to-parse|`(see below)
         did not contain enough element that match to
@@ -109,7 +109,7 @@ Exception details is listed in the section #Arguments# below.
     > (unless `#:enable-unknown`) is set.
     - abort:
       - if `|list-of-keyword|` is not a list
-      - for each element ***k*** of `|list-of-keyword|,`
+      - for each element ***k*** of `|list-of-keyword|`,
         if the necessary parameter
         `|arguments-to-parse|`(see below)
         did not contain a pair that `car` is ***k***
