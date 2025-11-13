@@ -14,6 +14,9 @@
 			((abort condition ...) (let ()
 				(print-call-chain (current-error-port))(newline (current-error-port))
 				(abort condition ...)))))
+		(vargcondition (syntax-rules ()
+			((vargcondition ? ...)
+				(condition (list 'varg ? ...)))))
 	)
 	(define inerr "internal logic error, please contact maintainer")
 	(define sserr
@@ -21,11 +24,10 @@
 	(let ((<> |>with-value,without-value,literal,explicit,enable-unknown<|))
 		(cond
 			((not (list? <>))
-				(abort (condition
-					`(varg
-							message ,(string-append
-								"(define (.)) does not get list argument, "
-								sserr)))))))
+				(abort (vargcondition
+					'message (string-append
+						"(define (.)) does not get list argument, "
+						sserr))))))
 	(define (:varg
 			<>
 			<with-value> <without-value>
@@ -41,15 +43,14 @@
 				((null? ::<>)
 					(cond ((> (length ::<literal>) (length <literal>))
 						(cond ((not enable-unknown)
-							(abort (condition `(varg
-								message ,(sprintf "unknown arguments:\n~S"
-								(list-tail (reverse ::<literal>) (length <literal>)))))))
-						)))
+							(abort (vargcondition
+								'message (sprintf "unknown arguments:\n~S"
+								(list-tail (reverse ::<literal>) (length <literal>)))))))))
 					(cond ((< (length ::<literal>) (length <literal>))
-						(abort (condition `(varg
-							message ,(sprintf "missing literal arguments:\n~S"
+						(abort (vargcondition
+							'message (sprintf "missing literal arguments:\n~S"
 								(list-tail (reverse <literal>)
-									(- (- (length <literal>) (length ::<literal>)) 1))))))))
+									(- (- (length <literal>) (length ::<literal>)) 1)))))))
 					(let*
 						(
 							(missing
@@ -64,9 +65,9 @@
 						)
 						(cond
 							((not (null? missing))
-								(abort (condition `(varg
-									message ,(sprintf "missing with-value arguments:\n~S"
-										missing))))))
+								(abort (vargcondition
+									'message (sprintf "missing with-value arguments:\n~S"
+										missing)))))
 					)
 					(list
 						(cons #:with-value ::>with-value<)
@@ -137,20 +138,20 @@
 				(args (assoc* '() #:literal meta-arg))
 			)
 			(cond
-				((not (list? args)) (abort (condition `(varg message ,inerr))))
-				((null? args) (abort (condition `(varg message ,inerr))))
+				((not (list? args)) (abort (vargcondition 'message inerr)))
+				((null? args) (abort (vargcondition 'message inerr)))
 				((not (list? (car args)))
-					(abort (condition `(varg
-						message ,(sprintf
-							"arguments to parse is not a list:\n~A" (car args))))))
+					(abort (vargcondition
+						'message (sprintf
+							"arguments to parse is not a list:\n~A" (car args)))))
 			)
 			(map
 				(lambda (?)
 					(let ((to-check (assoc* '() ? (assoc* '() #:with-value meta-arg))))
 						(cond ((not (list? to-check))
-							(abort (condition `(varg
-								message ,(sprintf
-									"value of ~S is not a list:\n~S" ?  to-check))))))))
+							(abort (vargcondition
+								'message (sprintf
+									"value of ~S is not a list:\n~S" ?  to-check)))))))
 				'(#:with-value #:without-value #:literal #:explicit))
 			(let
 				(
@@ -162,10 +163,10 @@
 					(enable-unknown (member #:enable-unknown (assoc* '() #:without-value meta-arg)))
 				)
 				(map (lambda (?) (cond ((not (keyword? ?))
-					(abort (condition `(varg
-						message ,(sprintf
+					(abort (vargcondition
+						'message (sprintf
 							"non keyword value in #:without-value:\n~S"
-							? )))))))
+							? ))))))
 					without-value)
 				(:varg
 					args
