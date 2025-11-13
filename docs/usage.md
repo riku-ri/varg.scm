@@ -163,7 +163,7 @@ For example a procedure that copy file to another path named `cp`
   Which means copy `/tmp/a` to `/tmp/b`, and set `/tmp/b` mode to `0777`
   > In the definition of `cp`, `varg` will return
   > `'((#:with-value (#:mode . 511)) (#:without-value) (#:literal "/tmp/a" "/tmp/b"))`
-  > And `cp` can implement the rela copy process based on it.
+  > And `cp` can implement the real copy process based on it.
   > > `511` is the octal value of `#o777`
 - `(cp #:force "/tmp/a" "/tmp/b")`  
   Which means copy `/tmp/a` to `/tmp/b`, and replace `/tmp/b` if exists
