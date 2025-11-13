@@ -128,10 +128,15 @@ Exception details is listed in the section #Arguments# below.
         > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
         > If `#:enable-unknown` is not set,
         > `varg` will abort a condition regarding `2 #:a-keyword` is unknown.
-  - [necessary]`(list |arguments-to-parse|)`
+  - [necessary] `|arguments-to-parse|`
     - abort:
       - if this is missing
       - if this is not a list
+    - *e.g.*
+      - `(varg)` will abort a condition regarding missing this argument
+      - `(varg #())` will abort a condition regarding this is not a list
+      > Content of `|arguments-to-parse|` may lead to abort
+      > according to other arguments, see above
 
   Each part listed above can be omitted except item marked by "[necessary]".
   And order is not sensitive.
