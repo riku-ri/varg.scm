@@ -57,7 +57,7 @@ Exception details is listed in the section #Arguments# below.
     > If a with-value parameter is necessary for your self-defined function,
     > set the keyword in `#:explict`
     - abort:
-      - if `|list-of-keyword| `is not a list
+      - if `|list-of-keyword|` is not a list
       - may abort by `#:explict`(see below)
     - *e.g.*
       - `(varg '(#:with-value #:a #:b) '())`
@@ -74,7 +74,7 @@ Exception details is listed in the section #Arguments# below.
     - abort:
       - if any element of `|list-of-keyword|`
         is not a keyword
-      - if `|list-of-keyword| `is not a list
+      - if `|list-of-keyword|` is not a list
     - *e.g.*
       - `(varg '(#:without-value #:c #:d) '(#:c))`
   - `(cons #:literal |any-list|)`
@@ -108,7 +108,7 @@ Exception details is listed in the section #Arguments# below.
     > and `#:literal` is always necessary
     > (unless `#:enable-unknown`) is set.
     - abort:
-      - if `|list-of-keyword| `is not a list
+      - if `|list-of-keyword|` is not a list
       - for each element ***k*** of `|list-of-keyword|,`
         if the necessary parameter
         `|arguments-to-parse|`(see below)
