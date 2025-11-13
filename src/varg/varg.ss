@@ -5,25 +5,20 @@
 (import (chicken format))
 (import (chicken keyword))
 (import (chicken string))
+(import (chicken condition))
 
-(define (varg . |>with-value,without-value,literal,explicit,enable-unknown,before-abort<|)
-	(define errtag "[varg]")
+(define (varg . |>with-value,without-value,literal,explicit,enable-unknown<|)
 	(define inerr "internal logic error, please contact maintainer")
-	(let ((<> |>with-value,without-value,literal,explicit,enable-unknown,before-abort<|))
-		(cond ((not (list? <>)) (error errtag (sprintf "argument is not a list ~S" <>)))))
-	(define before-abort
-		(foldl
-			(lambda (l r)
-				(cond
-					((pair? r)
-						(cond
-							((eq? (car r) #:before-abort) (cdr r))
-							(else l)))
-						(else l)))
-			void
-			|>with-value,without-value,literal,explicit,enable-unknown,before-abort<|))
-	(cond ((not (procedure? before-abort)) (error "#:before-abort is not a procedure" before-abort)))
-
+	(define sserr
+		"scheme syntax should not get this error, maybe a chicken scheme bug")
+	(let ((<> |>with-value,without-value,literal,explicit,enable-unknown<|))
+		(cond
+			((not (list? <>))
+				(abort (condition
+					`(varg
+							message ,(string-append
+								"(define (.)) does not get list argument, "
+								sserr)))))))
 	(define (:varg
 			<>
 			<with-value> <without-value>
@@ -35,23 +30,20 @@
 				::>with-value< ::<without-value>
 				::<literal>
 			)
-			(let
-				(
-					(error (lambda (^ . ...)
-						(before-abort)
-						(apply error (cons errtag (cons ^ ...)))))
-				)
+			(let ()
 				(cond
 					((null? ::<>)
 						(cond ((> (length ::<literal>) (length <literal>))
 							(cond ((not enable-unknown)
-								(error "unknown arguments"
+								(abort (condition `(varg
+									message ,(sprintf "unknown arguments:\n~S"
 									(list-tail (reverse ::<literal>) (length <literal>)))))))
+							)))
 						(cond ((< (length ::<literal>) (length <literal>))
-							(error "missing literal arguments"
-								(list-tail (reverse <literal>)
-									(- (- (length <literal>) (length ::<literal>)) 1)))))
-						;(error (map car ::>with-value<))
+							(abort (condition `(varg
+								message ,(sprintf "missing literal arguments:\n~S"
+									(list-tail (reverse <literal>)
+										(- (- (length <literal>) (length ::<literal>)) 1))))))))
 						(let*
 							(
 								(missing
@@ -66,7 +58,9 @@
 							)
 							(cond
 								((not (null? missing))
-									(error "missing with-value arguments" missing)))
+									(abort (condition `(varg
+										message ,(sprintf "missing with-value arguments:\n~S"
+											missing))))))
 						)
 						(list
 							(cons #:with-value ::>with-value<)
@@ -118,39 +112,40 @@
 			(assoc* (lambda (if-not-in key alist)
 				(cond ((assoc key alist) (cdr (assoc key alist))) (else if-not-in))))
 			(meta-arg (:varg
-					|>with-value,without-value,literal,explicit,enable-unknown,before-abort<|
+					|>with-value,without-value,literal,explicit,enable-unknown<|
 					'(
 						#:with-value
 						#:without-value
 						#:literal
 						#:explicit
-						#:before-abort
 					) ;<with-value>
 					'(
 						#:enable-unknown
 					) ;<without-value>
-					'(args) ;<literal>
+					'("necessary 'arguments-to-parse' to (varg ...)") ;<literal>
 					'() ;<explicit>
 					#f ;enable-unknown
 				))
 		)
 		(let*
 			(
-				(error (lambda (^ . ...)
-					(before-abort)
-					(apply error (cons errtag (cons ^ ...)))))
 				(args (assoc* '() #:literal meta-arg))
 			)
 			(cond
-				((not (list? args)) (error inerr))
-				((null? args) (error "No arguments to parse"))
+				((not (list? args)) (abort (condition `(varg message ,inerr))))
+				((null? args) (abort (condition `(varg message ,inerr))))
 				((not (list? (car args)))
-					(error "arguments to parse is not a list" (car args)))
+					(abort (condition `(varg
+						message ,(sprintf
+							"arguments to parse is not a list:\n~A" (car args))))))
 			)
 			(map
 				(lambda (?)
 					(let ((to-check (assoc* '() ? (assoc* '() #:with-value meta-arg))))
-						(cond ((not (list? to-check)) (error (sprintf "value of ~S is not a list" ?) to-check)))))
+						(cond ((not (list? to-check))
+							(abort (condition `(varg
+								message ,(sprintf
+									"value of ~S is not a list:\n~S" ?  to-check))))))))
 				'(#:with-value #:without-value #:literal #:explicit))
 			(let
 				(
@@ -161,7 +156,12 @@
 					(explicit (assoc* '() #:explicit (assoc* '() #:with-value meta-arg)))
 					(enable-unknown (member #:enable-unknown (assoc* '() #:without-value meta-arg)))
 				)
-				(map (lambda (?) (cond ((not (keyword? ?)) (error "non keyword value in #:without-value" ?)))) without-value)
+				(map (lambda (?) (cond ((not (keyword? ?))
+					(abort (condition `(varg
+						message ,(sprintf
+							"non keyword value in #:without-value:\n~S"
+							? )))))))
+					without-value)
 				(:varg
 					args
 					with-value

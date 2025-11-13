@@ -62,14 +62,6 @@
 				(varg '(#:with-value "to-set") '(#:explicit "to-set") '(("to-set" . should-be-this))))))
 )
 
-(test-group "#:before-abort"
-	(test-error (varg '(#:before-abort 1) '()))
-	(test-error (varg '(#:before-abort (lambda () ())) '()))
-	(test empty-result (varg `(#:before-abort . ,(lambda () '())) '()))
-	(test-error (varg '(#:before-abort . void) '()))
-	(test empty-result (varg `(#:before-abort . ,void) '()))
-)
-
 (test-group "#:enable-unknown"
 	(test-error (varg '("error-here")))
 	(test
