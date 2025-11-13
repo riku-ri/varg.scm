@@ -36,11 +36,11 @@ section structure will be like:
 #### Exception
 
 Exception of `(varg |args|)`
-is supposed to be compliant with the module (chicken condition)
+is supposed to be compliant with the module `(chicken condition)`
 and SRFI-12
 - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
 
-All except kind must be `(quote varg)`,
+All condition kind must be `(quote varg)`,
 and contain at least a property `(quote message)`
 
 Exception details is listed in the section #Arguments# below.
