@@ -8,6 +8,13 @@
 (import (chicken condition))
 
 (define (varg . |>with-value,without-value,literal,explicit,enable-unknown<|)
+(let-syntax
+	(
+		(abort (syntax-rules ()
+			((abort condition ...) (let ()
+				(print-call-chain (current-error-port))(newline (current-error-port))
+				(abort condition ...)))))
+	)
 	(define inerr "internal logic error, please contact maintainer")
 	(define sserr
 		"scheme syntax should not get this error, maybe a chicken scheme bug")
@@ -30,77 +37,75 @@
 				::>with-value< ::<without-value>
 				::<literal>
 			)
-			(let ()
-				(cond
-					((null? ::<>)
-						(cond ((> (length ::<literal>) (length <literal>))
-							(cond ((not enable-unknown)
-								(abort (condition `(varg
-									message ,(sprintf "unknown arguments:\n~S"
-									(list-tail (reverse ::<literal>) (length <literal>)))))))
-							)))
-						(cond ((< (length ::<literal>) (length <literal>))
+			(cond
+				((null? ::<>)
+					(cond ((> (length ::<literal>) (length <literal>))
+						(cond ((not enable-unknown)
 							(abort (condition `(varg
-								message ,(sprintf "missing literal arguments:\n~S"
-									(list-tail (reverse <literal>)
-										(- (- (length <literal>) (length ::<literal>)) 1))))))))
-						(let*
-							(
-								(missing
-									(foldl
-										(lambda (l r)
-											(cond
-												((member r (map car ::>with-value<)) l)
-												(else (cons r l)
-											)))
-										'()
-										<explicit>))
-							)
-							(cond
-								((not (null? missing))
-									(abort (condition `(varg
-										message ,(sprintf "missing with-value arguments:\n~S"
-											missing))))))
+								message ,(sprintf "unknown arguments:\n~S"
+								(list-tail (reverse ::<literal>) (length <literal>)))))))
+						)))
+					(cond ((< (length ::<literal>) (length <literal>))
+						(abort (condition `(varg
+							message ,(sprintf "missing literal arguments:\n~S"
+								(list-tail (reverse <literal>)
+									(- (- (length <literal>) (length ::<literal>)) 1))))))))
+					(let*
+						(
+							(missing
+								(foldl
+									(lambda (l r)
+										(cond
+											((member r (map car ::>with-value<)) l)
+											(else (cons r l)
+										)))
+									'()
+									<explicit>))
 						)
-						(list
-							(cons #:with-value ::>with-value<)
-							(cons #:without-value ::<without-value>)
-							(cons #:literal (reverse ::<literal>))
-						)
-					)
-					((keyword? (car ::<>))
 						(cond
-							((member (car ::<>) <without-value>)
-								(::varg (cdr ::<>)
-									::>with-value< (cons (car ::<>) ::<without-value>)
-									::<literal>
-								))
-							(else
-								(::varg (cdr ::<>)
-									::>with-value< ::<without-value>
-									(cons (car ::<>) ::<literal>)
-							))
-						)
+							((not (null? missing))
+								(abort (condition `(varg
+									message ,(sprintf "missing with-value arguments:\n~S"
+										missing))))))
 					)
-					((pair? (car ::<>))
-						(cond
-							((member (car (car ::<>)) <with-value>)
-								(::varg (cdr ::<>)
-									(cons (car ::<>) ::>with-value<) ::<without-value>
-									::<literal>
-								))
-							(else
-								(::varg (cdr ::<>)
-									::>with-value< ::<without-value>
-									(cons (car ::<>) ::<literal>)
-							))
-						)
+					(list
+						(cons #:with-value ::>with-value<)
+						(cons #:without-value ::<without-value>)
+						(cons #:literal (reverse ::<literal>))
 					)
-					(else
-						(::varg (cdr ::<>)
-							::>with-value< ::<without-value>
-							(cons (car ::<>) ::<literal>)
-						)
+				)
+				((keyword? (car ::<>))
+					(cond
+						((member (car ::<>) <without-value>)
+							(::varg (cdr ::<>)
+								::>with-value< (cons (car ::<>) ::<without-value>)
+								::<literal>
+							))
+						(else
+							(::varg (cdr ::<>)
+								::>with-value< ::<without-value>
+								(cons (car ::<>) ::<literal>)
+						))
+					)
+				)
+				((pair? (car ::<>))
+					(cond
+						((member (car (car ::<>)) <with-value>)
+							(::varg (cdr ::<>)
+								(cons (car ::<>) ::>with-value<) ::<without-value>
+								::<literal>
+							))
+						(else
+							(::varg (cdr ::<>)
+								::>with-value< ::<without-value>
+								(cons (car ::<>) ::<literal>)
+						))
+					)
+				)
+				(else
+					(::varg (cdr ::<>)
+						::>with-value< ::<without-value>
+						(cons (car ::<>) ::<literal>)
 					)
 				)
 			)
@@ -173,6 +178,6 @@
 			)
 		)
 	)
-)
+))
 
 )
