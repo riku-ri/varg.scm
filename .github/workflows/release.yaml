@@ -48,7 +48,7 @@ jobs:
         sys.stdout.write(json.dumps(vmax))
         ' > V.json
     - run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
-      if: ${{ inputs.type == 'break API' }}
+      if: ${{ inputs.type == 'NEW' }}
     - run: printf "$(cat V.json | jq -M '.[0]').$(expr $(cat V.json | jq -M '.[1]') + 1).$(cat V.json | jq -M '.[2]')" | tee v
       if: ${{ inputs.type == 'new feature' }}
     - run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
