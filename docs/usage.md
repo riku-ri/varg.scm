@@ -52,7 +52,7 @@ Exception details is listed in the section #Arguments# below.
   - `(cons #:with-value |list-of-keyword|)`
     > Arguments that are with value.
     > They may present in the necessary parameter
-    > `|a-procedure-without-argument|`
+    > `|arguments-to-parse|`(see below)
     > as a pair.
     > If a with-value parameter is necessary for your self-defined function,
     > set the keyword in `#:explict`
@@ -69,7 +69,7 @@ Exception details is listed in the section #Arguments# below.
   - `(cons #:without-value |list-of-keyword|)`
     > Arguments that are without value.
     > They may present in the necessary parameter
-    > `|a-procedure-without-argument|`
+    > `|arguments-to-parse|`(see below)
     > They are like options in command line, set or not.
     - abort:
       - if any element of `|list-of-keyword|`
@@ -80,7 +80,7 @@ Exception details is listed in the section #Arguments# below.
   - `(cons #:literal |any-list|)`
     > Literal parameters.
     > They **must** present in the necessary parameter
-    > `|a-procedure-without-argument|.`
+    > `|arguments-to-parse|`(see below).
     > > Details of `|any-list|`
     > > make no sense for `varg`,
     > > `varg` only need to know number of them.
@@ -88,9 +88,9 @@ Exception details is listed in the section #Arguments# below.
     > > `|any-list|,`
     > > but it is recommended make all elements to be scheme quoted symbol
     - abort:
-      - if `|list-of-keyword| `is not a list
+      - if `|any-list| `is not a list
       - if the necessary parameter
-        `|a-procedure-without-argument|(`see below)
+        `|arguments-to-parse|`(see below)
         did not contain enough element that match to
         `|any-list|`
     - *e.g.*
@@ -111,7 +111,7 @@ Exception details is listed in the section #Arguments# below.
       - if `|list-of-keyword| `is not a list
       - for each element ***k*** of `|list-of-keyword|,`
         if the necessary parameter
-        `|a-procedure-without-argument|(`see below)
+        `|arguments-to-parse|`(see below)
         did not contain a pair that `car` is ***k***
         > If a keyword presented in `#:explict` but not in `#:with-value`,
         > `varg` will **abort forever**.
