@@ -45,7 +45,7 @@ Conditions kind should be one of below:
 - or system conditions listed in:
   - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
 
-Exception details is listed in the section #Arguments# below.
+Details about exception with kind `(quote varg)` is in the section #Arguments# below.
 
 #### Arguments
 
