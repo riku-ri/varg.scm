@@ -143,7 +143,7 @@
 				((not (list? (car args)))
 					(abort (vargcondition
 						'message (sprintf
-							"arguments to parse is not a list:\n~A" (car args)))))
+							"arguments to parse is not a list:\n~S" (car args)))))
 			)
 			(map
 				(lambda (?)
