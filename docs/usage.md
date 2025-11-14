@@ -40,8 +40,10 @@ is supposed to be compliant with the module `(chicken condition)`
 and SRFI-12
 - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
 
-All condition kind must be `(quote varg)`,
-and contain at least a property `(quote message)`
+Conditions kind should be one of below:
+- kind is `(quote varg)` and contain at least a property `(quote message)`
+- or system conditions listed in:
+  - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
 
 Exception details is listed in the section #Arguments# below.
 
