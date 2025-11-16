@@ -7,31 +7,27 @@
 (import (chicken string))
 (import (chicken condition))
 
-(define (varg . |>with-value,without-value,literal,explicit,enable-unknown<|)
+(define (varg . varg...)
 (let-syntax
 	(
-		(abort (syntax-rules ()
-			((abort condition ...) (let ()
-				(abort condition ...)))))
-		(vargcondition (syntax-rules ()
-			((vargcondition ? ...)
-				(condition (list 'varg ? ...)))))
+		(vcondition (syntax-rules ()
+			((vcondition message ...)
+				(condition (list 'varg (string->symbol "message") message) ...))))
 	)
 	(define inerr "internal logic error, please contact maintainer")
 	(define sserr
 		"scheme syntax should not get this error, maybe a chicken scheme bug")
-	(let ((<> |>with-value,without-value,literal,explicit,enable-unknown<|))
-		(cond
-			((not (list? <>))
-				(abort (vargcondition
-					'message (string-append
-						"(define (.)) does not get list argument, "
-						sserr))))))
+	(cond
+		((not (list? varg...))
+			(abort (vcondition
+				(string-append
+					"(define (.)) does not get list argument, "
+					sserr)))))
 	(define (:varg
 			<>
 			<with-value> <without-value>
 			<literal> <explicit>
-			enable-unknown
+			enable-unknown verbose
 		)
 		(define (::varg
 				::<>
@@ -41,13 +37,26 @@
 			(cond
 				((null? ::<>)
 					(cond ((> (length ::<literal>) (length <literal>))
-						(cond ((not enable-unknown)
-							(abort (vargcondition
-								'message (sprintf "unknown arguments:\n~S"
-								(list-tail (reverse ::<literal>) (length <literal>)))))))))
+						(cond
+							((not enable-unknown)
+								(abort (vcondition
+									(sprintf "unknown arguments:\n~S"
+									(list-tail (reverse ::<literal>) (length <literal>))))))
+							(verbose
+								(display verbose (current-error-port))
+								(display
+									(string-append
+										"Note that #:enable-unknown was set, "
+										"unknown arguments will not abort here"
+									)
+									(current-error-port)
+								)
+								(newline (current-error-port))
+							)
+						)))
 					(cond ((< (length ::<literal>) (length <literal>))
-						(abort (vargcondition
-							'message (sprintf "missing literal arguments:\n~S"
+						(abort (vcondition
+							(sprintf "missing literal arguments:\n~S"
 								(list-tail (reverse <literal>)
 									(- (- (length <literal>) (length ::<literal>)) 1)))))))
 					(let*
@@ -64,8 +73,8 @@
 						)
 						(cond
 							((not (null? missing))
-								(abort (vargcondition
-									'message (sprintf "missing with-value arguments:\n~S"
+								(abort (vcondition
+									(sprintf "missing with-value arguments:\n~S"
 										missing)))))
 					)
 					(list
@@ -117,7 +126,7 @@
 			(assoc* (lambda (if-not-in key alist)
 				(cond ((assoc key alist) (cdr (assoc key alist))) (else if-not-in))))
 			(meta-arg (:varg
-					|>with-value,without-value,literal,explicit,enable-unknown<|
+					varg...
 					'(
 						#:with-value
 						#:without-value
@@ -126,10 +135,12 @@
 					) ;<with-value>
 					'(
 						#:enable-unknown
+						#:verbose
 					) ;<without-value>
 					'("necessary 'arguments-to-parse' to (varg ...)") ;<literal>
 					'() ;<explicit>
 					#f ;enable-unknown
+					#f ;verbose
 				))
 		)
 		(let*
@@ -137,19 +148,19 @@
 				(args (assoc* '() #:literal meta-arg))
 			)
 			(cond
-				((not (list? args)) (abort (vargcondition 'message inerr)))
-				((null? args) (abort (vargcondition 'message inerr)))
+				((not (list? args)) (abort (vcondition inerr)))
+				((null? args) (abort (vcondition inerr)))
 				((not (list? (car args)))
-					(abort (vargcondition
-						'message (sprintf
+					(abort (vcondition
+						(sprintf
 							"arguments to parse is not a list:\n~S" (car args)))))
 			)
 			(map
 				(lambda (?)
 					(let ((to-check (assoc* '() ? (assoc* '() #:with-value meta-arg))))
 						(cond ((not (list? to-check))
-							(abort (vargcondition
-								'message (sprintf
+							(abort (vcondition
+								(sprintf
 									"value of ~S is not a list:\n~S" ?  to-check)))))))
 				'(#:with-value #:without-value #:literal #:explicit))
 			(let
@@ -160,10 +171,11 @@
 					(literal (assoc* '() #:literal (assoc* '() #:with-value meta-arg)))
 					(explicit (assoc* '() #:explicit (assoc* '() #:with-value meta-arg)))
 					(enable-unknown (member #:enable-unknown (assoc* '() #:without-value meta-arg)))
+					(verbose (member #:verbose (assoc* '() #:without-value meta-arg)))
 				)
 				(map (lambda (?) (cond ((not (keyword? ?))
-					(abort (vargcondition
-						'message (sprintf
+					(abort (vcondition
+						(sprintf
 							"non keyword value in #:without-value:\n~S"
 							? ))))))
 					without-value)
@@ -174,6 +186,7 @@
 					literal
 					explicit
 					enable-unknown
+					verbose
 				)
 			)
 		)
