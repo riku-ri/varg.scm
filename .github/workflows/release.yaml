@@ -30,8 +30,8 @@ jobs:
     uses: ./.github/workflows/test.yaml
   release:
     environment: release
-    needs:
-    - test
+    #needs:
+    #- test
     env:
       GH_TOKEN: ${{ secrets.RELEASE_PAT }}
     runs-on: ubuntu-latest #public
@@ -41,29 +41,31 @@ jobs:
         gh -R ${{ github.event.repository.full_name }} release ls --json tagName | python -c '
         import json,sys;
         vlist = list(map(lambda __:list(map(int , __["tagName"].split("."))) , json.loads(sys.stdin.read())))
-        vmax = []
-        vmax.append(max(map(lambda __:__[0] , vlist)))
-        vmax.append(max(map(lambda __:__[1] , vlist)))
-        vmax.append(max(map(lambda __:__[2] , vlist)))
+        vmax = {}
+        for v in vlist :
+          vmax.setdefault(v[0] , [0,0])
+          if v[1]>vmax[v[0]][1] : vmax[v[0]][1] = v[1]
+          if v[2]>vmax[v[0]][2] : vmax[v[0]][1] = v[2]
         sys.stdout.write(json.dumps(vmax))
         ' > V.json
-    - run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
-      if: ${{ inputs.type == 'NEW' }}
-    - run: printf "$(cat V.json | jq -M '.[0]').$(expr $(cat V.json | jq -M '.[1]') + 1).$(cat V.json | jq -M '.[2]')" | tee v
-      if: ${{ inputs.type == 'feature' }}
-    - run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
-      if: ${{ inputs.type == 'fix' || inputs.type == 'misc' }}
+    - run: cat V.json
+    #- run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
+    #  if: ${{ inputs.type == 'NEW' }}
+    #- run: printf "$(cat V.json | jq -M '.[0]').$(expr $(cat V.json | jq -M '.[1]') + 1).$(cat V.json | jq -M '.[2]')" | tee v
+    #  if: ${{ inputs.type == 'feature' }}
+    #- run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
+    #  if: ${{ inputs.type == 'fix' || inputs.type == 'misc' }}
 
-    - run: printf 'gh -R ${{ github.event.repository.full_name }} release new' | tee gh
-    - run: printf ' --prerelease' | tee --append gh
-      if: ${{ inputs.prerelease }}
-    - run: printf ' --draft' | tee --append gh
-      if: ${{ inputs.draft }}
-    - run: printf ' --fail-on-no-commits' | tee --append gh
-      if: ${{ inputs.fail-on-no-commits }}
-    - run: cat gh
-    - run: |
-        $(cat gh) \
-            -t "$(cat v) "'${{ inputs.title }}' \
-            -n "${{ inputs.notes }}" \
-            "$(cat v)"
+    #- run: printf 'gh -R ${{ github.event.repository.full_name }} release new' | tee gh
+    #- run: printf ' --prerelease' | tee --append gh
+    #  if: ${{ inputs.prerelease }}
+    #- run: printf ' --draft' | tee --append gh
+    #  if: ${{ inputs.draft }}
+    #- run: printf ' --fail-on-no-commits' | tee --append gh
+    #  if: ${{ inputs.fail-on-no-commits }}
+    #- run: cat gh
+    #- run: |
+    #    $(cat gh) \
+    #        -t "$(cat v) "'${{ inputs.title }}' \
+    #        -n "${{ inputs.notes }}" \
+    #        "$(cat v)"
