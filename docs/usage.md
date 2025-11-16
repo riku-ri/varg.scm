@@ -130,6 +130,9 @@ Details about exception with kind `(quote varg)` is in the section #Arguments# b
         > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
         > If `#:enable-unknown` is not set,
         > `varg` will abort a condition regarding `2 #:a-keyword` is unknown.
+  - `#:verbose`
+    > If set, `varg` will output more information to `(current-error-port)`.
+    > Usually used in debug
   - [necessary] `|arguments-to-parse|`
     - abort:
       - if this is missing
