@@ -44,8 +44,8 @@ jobs:
         vmax = {}
         for v in vlist :
           vmax.setdefault(v[0] , [0,0])
-          if v[1]>vmax[v[0]][1] : vmax[v[0]][1] = v[1]
-          if v[2]>vmax[v[0]][2] : vmax[v[0]][1] = v[2]
+          if v[1]>vmax[v[0]][0] : vmax[v[0]][0] = v[1]
+          if v[2]>vmax[v[0]][1] : vmax[v[0]][1] = v[2]
         sys.stdout.write(json.dumps(vmax))
         ' > V.json
     - run: cat V.json
