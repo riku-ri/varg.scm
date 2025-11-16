@@ -26,8 +26,8 @@ on:
         required: false
         type: string
 jobs:
-  test:
-    uses: ./.github/workflows/test.yaml
+  #test:
+  #  uses: ./.github/workflows/test.yaml
   release:
     environment: release
     #needs:
@@ -46,7 +46,7 @@ jobs:
           vmax.setdefault(v[0] , [0,0])
           if v[1]>vmax[v[0]][0] : vmax[v[0]][0] = v[1]
           if v[2]>vmax[v[0]][1] : vmax[v[0]][1] = v[2]
-        sys.stdout.write(json.dumps(vmax))
+        sys.stdout.write(json.dumps(reversed(sort(list(vmax.items())))))
         ' > V.json
     - run: cat V.json
     #- run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
@@ -55,6 +55,7 @@ jobs:
     #  if: ${{ inputs.type == 'feature' }}
     #- run: printf "$(cat V.json | jq -M '.[0]').$(cat V.json | jq -M '.[1]').$(expr $(cat V.json | jq -M '.[2]') + 1)" | tee v
     #  if: ${{ inputs.type == 'fix' || inputs.type == 'misc' }}
+    #- run: cat v
 
     #- run: printf 'gh -R ${{ github.event.repository.full_name }} release new' | tee gh
     #- run: printf ' --prerelease' | tee --append gh
