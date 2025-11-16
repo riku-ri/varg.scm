@@ -51,7 +51,7 @@ jobs:
     - run: cat V.json
     - run: printf "$(expr $(cat V.json | jq -M '.[0].[0]') + 1).0.0" | tee v
       if: ${{ inputs.type == 'NEW' }}
-    - run: printf "$(cat V.json | jq -M '.[0].[0]').$(expr $(cat V.json | jq -M '.[0].[1].[0]') + 1).$(cat V.json | jq -M '.[0].[1].[2]')" | tee v
+    - run: printf "$(cat V.json | jq -M '.[0].[0]').$(expr $(cat V.json | jq -M '.[0].[1].[0]') + 1).$(cat V.json | jq -M '.[0].[1].[1]')" | tee v
       if: ${{ inputs.type == 'feature' }}
     - run: printf "$(cat V.json | jq -M '.[0].[0]').$(cat V.json | jq -M '.[0].[1].[0]').$(expr $(cat V.json | jq -M '.[0].[1].[1]') + 1)" | tee v
       if: ${{ inputs.type == 'fix' || inputs.type == 'misc' }}
