@@ -12,7 +12,6 @@
 	(
 		(abort (syntax-rules ()
 			((abort condition ...) (let ()
-				(print-call-chain (current-error-port))(newline (current-error-port))
 				(abort condition ...)))))
 		(vargcondition (syntax-rules ()
 			((vargcondition ? ...)
