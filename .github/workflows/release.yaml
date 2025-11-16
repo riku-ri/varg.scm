@@ -46,7 +46,7 @@ jobs:
           vmax.setdefault(v[0] , [0,0])
           if v[1]>vmax[v[0]][0] : vmax[v[0]][0] = v[1]
           if v[2]>vmax[v[0]][1] : vmax[v[0]][1] = v[2]
-        sys.stdout.write(json.dumps(reversed(sort(list(vmax.items())))))
+        sys.stdout.write(json.dumps(reversed(sorted(list(vmax.items())))))
         ' > V.json
     - run: cat V.json
     #- run: printf "$(expr $(cat V.json | jq -M '.[0]') + 1).0.0" | tee v
