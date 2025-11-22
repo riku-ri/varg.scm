@@ -11,8 +11,11 @@
 (let-syntax
 	(
 		(vcondition (syntax-rules ()
-			((vcondition message ...)
-				(condition (list 'varg (string->symbol "message") message) ...))))
+			((vcondition message others ...)
+				(condition (list 'varg (string->symbol "message") message) others ...))
+			((vcondition message)
+				(condition (list 'varg (string->symbol "message") message)))
+		))
 	)
 	(define inerr "internal logic error, please contact maintainer")
 	(define sserr
