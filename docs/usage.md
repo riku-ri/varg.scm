@@ -40,12 +40,20 @@ is supposed to be compliant with the module `(chicken condition)`
 and SRFI-12
 - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
 
-Conditions kind should be one of below:
-- kind is `(quote varg)` and contain at least a property `(quote message)`
-- or system conditions listed in:
-  - http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
+Details about exception are in the section #Arguments# below.
 
-Details about exception with kind `(quote varg)` is in the section #Arguments# below.
+##### non-continuable
+
+The non-continuable conditions expand system conditions from:
+- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
+
+More specifically, they would be:
+- be with composite kind `(exn varg)`
+  - for a condition from a specific procedure `<p>`,
+    the composite kind would be `(exn varg <p>)`
+- in the `exn` field, it will contain properties listed below:
+  - `'message`
+  - `'call-chain`
 
 #### Arguments
 

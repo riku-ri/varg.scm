@@ -12,9 +12,20 @@
 	(
 		(vcondition (syntax-rules ()
 			((vcondition message others ...)
-				(condition (list 'varg (string->symbol "message") message) others ...))
+				(condition (list 'exn
+					(string->symbol "message") message
+					'call-chain (get-call-chain))
+					'(varg) ; package name
+					'(varg) ; function name
+					others ...
+				))
 			((vcondition message)
-				(condition (list 'varg (string->symbol "message") message)))
+				(condition (list 'varg
+					(string->symbol "message") message
+					'call-chain (get-call-chain))
+					'(varg) ; package name
+					'(varg) ; function name
+				))
 		))
 	)
 	(define inerr "internal logic error, please contact maintainer")
