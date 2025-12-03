@@ -20,6 +20,28 @@ section structure will be like:
 
 ## API
 
+### Exception
+
+Exceptions is supposed to be compliant with
+the module `(chicken condition)` and SRFI-12
+- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
+
+Find more details about exception in
+the specific procedure below
+
+#### non-continuable
+
+The non-continuable conditions expand system conditions from:
+- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
+
+More specifically, they would be:
+- be with composite kind `(exn varg)`
+  - for a condition from a specific procedure `<p>`,
+    the composite kind would be `(exn varg <p>)`
+- in the `exn` field, it will contain properties listed below:
+  - `'message`
+  - `'call-chain`
+
 ### `(varg |args|)`
 
 #### Return
@@ -33,126 +55,132 @@ section structure will be like:
 - `(cons #:literal |any-list|)`
   - `|any-list|` is a list
 
-#### Exception
+#### Parameters
 
-Exception of `(varg |args|)`
-is supposed to be compliant with the module `(chicken condition)`
-and SRFI-12
-- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
+`|args|` in `(varg |args|)` should be a sequence that
+contain 1 or more element listed below,
+order is not sensitive:
+- `#:with-value`
+  - *format*
+    - `(cons #:with-value |list-of-keyword|)`
+      - Where `|list-of-keyword|` should be a list of keyword
+  - *description*
+    - Arguments that are with value.
+      They may present in the necessary parameter
+      `|arguments-to-parse|`(see below)
+      as a pair.
+      If a with-value parameter is necessary for your self-defined function,
+      set the keyword in `#:explict`
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - In the return value, `#:with-value` will follow a empty list
+  - *e.g.*
+    - `(varg '(#:with-value #:a #:b) '())`
+    - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '((#:a . "value of a")))`
+    - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '())`
+      > `varg` will abort a condition regarding `#:a` is missing because
+      > `#:a` is in `#:explict` but
+      > not in `'()`(the last parameter of `varg` here)
+- `#:without-value`
+  - *format*
+    - `(cons #:without-value |list-of-keyword|)`
+      - Where `|list-of-keyword|` should be a list of keyword
+  - *description*
+    - Arguments that are without value.
+      They may present in the necessary parameter
+      `|arguments-to-parse|`(see below)
+      They are like options in command line, set or not.
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - In the return value, `#:without-value` will follow a empty list
+  - *e.g.*
+    - `(varg '(#:without-value #:c #:d) '(#:c))`
+- `#:literal`
+  - *format*
+    - `(cons #:literal |any-list|)`
+      - Where `|any-list|` should be a list
+  - *description*
+    - Literal parameters.
+      They **must** present in the necessary parameter
+      `|arguments-to-parse|`(see below).
+      > Details of `|any-list|`
+      > make no sense for `varg`,
+      > `varg` only need to know number of them.
+      > So `varg` does not check types of elements in
+      > `|any-list|`,
+      > but it is recommended make all elements to be scheme quoted symbol
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - In the return value, `#:literal` will follow a empty list
+  - *e.g.*
+    - `(varg '(#:literal 1st 2nd) '("1" "2"))`
+      > This will return
+      > `'((#:with-value) (#:without-value) (#:lteral "1" "2"))`
+    - `(varg '(#:literal 1st 2nd) '("1"))`
+      > `varg` will abort a condition regarding `2nd` is missing here
+- `#:explict`
+  - *format*
+    - `(cons #:explict |list-of-keyword|)`
+      - Where `|list-of-keyword|` should be a list of keyword
+  - *description*
+    - If a argument listed in `#:with-value` is necessary,
+      put the keyword in `#:explict` too.
 
-Details about exception are in the section #Arguments# below.
-
-##### non-continuable
-
-The non-continuable conditions expand system conditions from:
-- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
-
-More specifically, they would be:
-- be with composite kind `(exn varg)`
-  - for a condition from a specific procedure `<p>`,
-    the composite kind would be `(exn varg <p>)`
-- in the `exn` field, it will contain properties listed below:
-  - `'message`
-  - `'call-chain`
-
-#### Arguments
-
-- `|args|` in `(varg |args|)`  
-  `|args|` should be a sequence of them:
-  - `(cons #:with-value |list-of-keyword|)`
-    > Arguments that are with value.
-    > They may present in the necessary parameter
-    > `|arguments-to-parse|`(see below)
-    > as a pair.
-    > If a with-value parameter is necessary for your self-defined function,
-    > set the keyword in `#:explict`
-    - abort:
-      - if `|list-of-keyword|` is not a list
-      - may abort by `#:explict`(see below)
-    - *e.g.*
-      - `(varg '(#:with-value #:a #:b) '())`
-      - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '((#:a . "value of a")))`
-      - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '())`
-        > `varg` will abort a condition regarding `#:a` is missing because
-        > `#:a` is in `#:explict` but
-        > not in `'()`(the last parameter of `varg` here)
-  - `(cons #:without-value |list-of-keyword|)`
-    > Arguments that are without value.
-    > They may present in the necessary parameter
-    > `|arguments-to-parse|`(see below)
-    > They are like options in command line, set or not.
-    - abort:
-      - if any element of `|list-of-keyword|`
-        is not a keyword
-      - if `|list-of-keyword|` is not a list
-    - *e.g.*
-      - `(varg '(#:without-value #:c #:d) '(#:c))`
-  - `(cons #:literal |any-list|)`
-    > Literal parameters.
-    > They **must** present in the necessary parameter
-    > `|arguments-to-parse|`(see below).
-    > > Details of `|any-list|`
-    > > make no sense for `varg`,
-    > > `varg` only need to know number of them.
-    > > So `varg` does not check types of elements in
-    > > `|any-list|`,
-    > > but it is recommended make all elements to be scheme quoted symbol
-    - abort:
-      - if `|any-list|` is not a list
-      - if the necessary parameter
-        `|arguments-to-parse|`(see below)
-        did not contain enough element that match to
-        `|any-list|`
-    - *e.g.*
-      - `(varg '(#:literal 1st 2nd) '("1" "2"))`
-        > This will return
-        > `'((#:with-value) (#:without-value) (#:lteral "1" "2"))`
-      - `(varg '(#:literal 1st 2nd) '("1"))`
-        > `varg` will abort a condition regarding `2nd` is missing here
-  - `(cons #:explict |list-of-keyword|)`
-    > If a argument listed in `#:with-value` is necessary,
-    > put the keyword in `#:explict` too.
-    >
-    > `#:explict` only check keywords in `#:with-value`.
-    > Because `#:without-value` is like boolean value(set or not),
-    > and `#:literal` is always necessary
-    > (unless `#:enable-unknown`) is set.
-    - abort:
-      - if `|list-of-keyword|` is not a list
-      - for each element ***k*** of `|list-of-keyword|`,
-        if the necessary parameter
-        `|arguments-to-parse|`(see below)
-        did not contain a pair that `car` is ***k***
-        > If a keyword presented in `#:explict` but not in `#:with-value`,
-        > `varg` will **abort forever**.
-    - *e.g.*
-      - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '((#:b . 1)))`
-        > `varg` will abort a condition regarding missing `#:a`
-  - `#:enable-unknown`
-    > If `#:enable-unknown` is set,
-    > `varg` will append unknown arguments to
-    > `#:literal` in result but not report error.
-    - *e.g.*
-      - `(varg #:enable-unknown '(#:literal only-one) '(1 2 #:a-keyword))`
-        > This will return
-        > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
-        > If `#:enable-unknown` is not set,
-        > `varg` will abort a condition regarding `2 #:a-keyword` is unknown.
-  - `#:verbose`
-    > If set, `varg` will output more information to `(current-error-port)`.
-    > Usually used in debug
-  - [necessary] `|arguments-to-parse|`
-    - abort:
-      - if this is missing
-      - if this is not a list
-    - *e.g.*
-      - `(varg)` will abort a condition regarding missing this argument
-      - `(varg #())` will abort a condition regarding this is not a list
-      > Content of `|arguments-to-parse|` may lead to abort
-      > according to other arguments, see above
-
-  Each part listed above can be omitted except item marked by "[necessary]".
-  And order is not sensitive.
+      `#:explict` only check keywords in `#:with-value`.
+      Because `#:without-value` is like boolean value(set or not),
+      and `#:literal` is always necessary
+      (unless `#:enable-unknown`) is set.
+      > If a keyword presented in `#:explict` but not in `#:with-value`,
+      > `varg` will **abort forever**.
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - All keyword after the parameter `#:with-value` can be omitted
+  - *e.g.*
+    - `(varg '(#:with-value #:a #:b) '(#:explict #:a) '((#:b . 1)))`
+      > `varg` will abort a condition regarding missing `#:a`
+- `#:enable-unknown`
+  - *format*
+    - Set or not
+  - *description*
+    - If `#:enable-unknown` is set,
+      `varg` will append unknown arguments to
+      `#:literal` in result but not report error.
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - Abort but not append to `#:literal`
+  - *e.g.*
+    - `(varg #:enable-unknown '(#:literal only-one) '(1 2 #:a-keyword))`
+      > This will return
+      > `'((#:with-value) (#:without-value) (#:literal 1 2 #:a-keyword))`.
+      > If `#:enable-unknown` is not set,
+      > `varg` will abort a condition regarding `2 #:a-keyword` is unknown.
+- `#:verbose`
+  - *format*
+    - Set or not
+  - *description*
+    - If set, `varg` will output more information to `(current-error-port)`.
+      Usually used in debug
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - Less infomation output to `(current-error-port)`
+- arguments to parse
+  - *format*
+    - `|arguments-to-parse|`
+      - should be a list
+  - *description*
+    - `varg` will iterate on it and group each element by settings in
+      `#:with-value` `#:witout-value`, etc parameters
+  - *e.g.*
+    - `(varg)` will abort a condition regarding missing this argument
+    - `(varg #())` will abort a condition regarding this is not a list
+    > Content of `|arguments-to-parse|` may lead to abort
+    > according to other arguments, see above
 
 ## Examples
 
@@ -185,5 +213,3 @@ For example a procedure that copy file to another path named `cp`
 ## License
 
 MIT
-
-## Version History
