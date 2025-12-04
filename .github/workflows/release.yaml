@@ -19,7 +19,7 @@ on:
         type: boolean
       title:
         description: 'title'
-        required: true
+        required: false
         type: string
       notes:
         description: 'release notes'
@@ -67,6 +67,6 @@ jobs:
     - run: cat gh
     - run: |
         $(cat gh) \
-            -t "$(cat v) "'${{ inputs.title }}' \
+            -t "$(cat v) '${{ inputs.title }}' \
             -n "${{ inputs.notes }}" \
             "$(cat v)"
