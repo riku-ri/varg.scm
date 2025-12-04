@@ -24,25 +24,6 @@
 	(extension varg.varg
 		(source src/varg/varg.ss)
 	)
-
-	;(extension varg
-	;	(csc-options "-uses" "varg.varg")
-	;	; Note that -uses is from the module manual page of chicken website
-	;	; According to
-	;	;   https://lists.gnu.org/archive/html/chicken-users/2005-09/msg00116.html
-	;	;   -uses is for static linking
-	;	; When compile a extension by chicken-install
-	;	;   -uses should not appear
-	;	;   cause it should generate a dynamic library(for csi)
-	;	(objects varg.varg)
-	;	(source src/varg.ss)
-	;	;(linkage dynamic)
-	;	;(linkage static)
-	;)
-	;(c-object varg.varg
-	;	(source src/include/varg.ss)
-	;	(csc-options "-J" "-unit" "varg.varg")
-	;)
 )
 
 )
