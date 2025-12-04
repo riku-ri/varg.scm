@@ -42,7 +42,7 @@ More specifically, they would be:
   - `'message`
   - `'call-chain`
 
-### `(varg |args|)`
+### `(varg . |args|)`
 
 #### Return
 
