@@ -67,6 +67,6 @@ jobs:
     - run: cat gh
     - run: |
         $(cat gh) \
-            -t "$(cat v) '${{ inputs.title }}' \
+            -t "$(cat v) "'${{ inputs.title }}' \
             -n "${{ inputs.notes }}" \
             "$(cat v)"
