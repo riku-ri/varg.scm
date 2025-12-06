@@ -195,12 +195,12 @@ for example
 		'(#:without-value #:wo1 #:wo2)
 		'(#:literal #:li1 #:li2)
 		args))
-	; After the call of fun below,
+	; After the call of `fun` at the bottom,
 	; varg-output should be a list:
 	'(
 		(#:with-value (#:wi1 . 1))
 		; #:wi2 does not appear
-		; because the call of `fun` at the top did not set it
+		; because the call of `fun` at the bottom did not set it
 		(#:without-value #:wo2)
 		(#:literal "non-keyword1" "non-keyword2")
 	)
