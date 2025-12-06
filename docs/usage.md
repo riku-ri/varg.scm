@@ -184,7 +184,49 @@ order is not sensitive:
 
 ## Examples
 
-For example a procedure that copy file to another path named `cp`
+Bascially *varg* filter the input list by conditions,
+and group them to 3 classes `#:with-value` `withou-value` `#:literal`.
+for example
+```lisp
+(import varg)
+(define (fun . args)
+	(set! varg-output (varg
+		'(#:with-value #:wi1 #:wi2)
+		'(#:without-value #:wo1 #:wo2)
+		'(#:literal #:li1 #:li2)
+		args))
+	; After the call of fun below,
+	; varg-output should be a list:
+	'(
+		(#:with-value (#:wi1 . 1))
+		; #:wi2 does not appear
+		; because the call of `fun` at the top did not set it
+		(#:without-value #:wo2)
+		(#:literal "non-keyword1" "non-keyword2")
+	)
+
+	; Hence get values like this:
+	(let
+		(
+			(with-value (cdr (assoc #:with-value varg-output)))
+			(without-value (cdr (assoc #:without-value varg-output)))
+			(literal (cdr (assoc #:literal varg-output)))
+		)
+		(print (cdr (assoc #:wi1 with-value))) ; this will be 1
+		(print (member #:wo2 without-value)) ; this will be equal to #t
+		(print (member #:wo1 without-value)) ; this will be #f
+		(print (list-ref literal 0)) ; this will "non-keyword1"
+		(print (list-ref literal 1)) ; this will "non-keyword2"
+	)
+)
+(fun
+	'(#:wi1 . 1)
+	#:wo2
+	"non-keyword1" "non-keyword2"
+)
+```
+
+For another example, a procedure that copy file to another path named `cp`
 > Just showing how to use `varg`, no copy implementation in `cp`
 
 ```lisp
